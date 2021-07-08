@@ -1,35 +1,36 @@
 package com.example.springbootcrud.config;
 
-import com.example.springbootcrud.dao.RoleRepository;
-import com.example.springbootcrud.dao.UserRepository;
+import com.example.springbootcrud.dao.RoleDao;
+import com.example.springbootcrud.dao.UserDao;
 import com.example.springbootcrud.model.Role;
 import com.example.springbootcrud.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-public class UserInit implements ApplicationListener<ContextRefreshedEvent> {
+@Configuration
+public class UserInit {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    @Autowired
+    RoleDao roleDao;
 
-    public UserInit (UserRepository userRepository,
-                            RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
+    @Autowired
+    UserDao userDao;
 
-    @Override
+
     @Transactional
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Role[] rolesArray = new Role[]{new Role("ROLE_ADMIN"), new Role("ROLE_USER")};
-        Set<Role> rolesSet = new HashSet<>();
-        rolesSet.addAll(Arrays.asList(rolesArray));
-        roleRepository.saveAll(rolesSet);
-        User admin = new User("admin", "admin", rolesSet);
-        userRepository.save(admin);
+    @Bean(initMethod = "init")
+    public void init(){
+        Role[] roles = {new Role("ROLE_ADMIN"), new Role("ROLE_USER")};
+        Set<Role> allRoles = new HashSet<>(Arrays.asList(roles));
+        roleDao.createRole(allRoles);
+        User admin = new User("admin", "admin");
+        admin.setRoles(allRoles);
+        userDao.createUser(admin);
     }
 }
-

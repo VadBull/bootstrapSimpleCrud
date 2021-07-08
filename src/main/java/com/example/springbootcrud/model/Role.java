@@ -2,16 +2,16 @@ package com.example.springbootcrud.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
     private Long id;
+
+    @Column
     private String roleName;
 
     @Transient
@@ -29,12 +29,13 @@ public class Role implements GrantedAuthority {
         this.roleName = roleName;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public String getAuthority() {
+        return roleName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getRoleName() {
@@ -43,11 +44,6 @@ public class Role implements GrantedAuthority {
 
     public void setRoleName(String role) {
         this.roleName = role;
-    }
-
-    @Override
-    public String getAuthority() {
-        return roleName;
     }
 
     @Override

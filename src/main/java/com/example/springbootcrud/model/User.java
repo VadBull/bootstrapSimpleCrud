@@ -1,5 +1,6 @@
 package com.example.springbootcrud.model;
 
+import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -7,29 +8,31 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
+@Table(name = "users")
 public class User implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Column
+    private String userName;
+
+    @Column
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+
     public User() {}
 
-    public User(String name, String password) {
-        this.name = name;
+    public User(String userName, String password) {
+        this.userName = userName;
         this.password = password;
     }
 
-    public User(String name, String password, Set<Role> roles) {
-        this(name, password);
-        this.roles = roles;
-    }
 
     public Long getId() {
         return id;
@@ -39,19 +42,25 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String getUsername() { // для security
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUserName() { // для html, thymeleaf
+        return userName;
     }
 
+    public void setUserName(@NonNull String userName) {
+        this.userName = userName;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NonNull String password) {
         this.password = password;
     }
 
@@ -59,27 +68,17 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(String roles) {
-        this.roles = new HashSet<>();
-        if (roles.contains("ROLE_ADMIN")) {
-            this.roles.add(new Role("ROLE_ADMIN"));
-        }
-        if (roles.contains("ROLE_USER")) {
-            this.roles.add(new Role("ROLE_USER"));
-        }
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-    //security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
     }
 
-    @Override
-    public String getUsername() {
-        return name;
-    }
 
+    // security
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -100,4 +99,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-

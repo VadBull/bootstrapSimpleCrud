@@ -1,48 +1,67 @@
 package com.example.springbootcrud.service;
 
-import com.example.springbootcrud.dao.UserRepository;
+import com.example.springbootcrud.dao.RoleDao;
+import com.example.springbootcrud.dao.UserDao;
+import com.example.springbootcrud.model.Role;
 import com.example.springbootcrud.model.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
-@Service("userServiceImpl")
+@Transactional
+@Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    @Autowired
+    private UserDao userDao;
 
-    public UserServiceImpl (UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private RoleDao roleDao;
 
-    @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        return userRepository.findByName(name);
-    }
+    public UserServiceImpl() {}
+
 
     @Override
     public void createUser(User user) {
-        userRepository.save(user);
+        userDao.createUser(user);
+    }
+
+
+    @Override
+    public User getUserById(Long id) {
+        return (User) userDao.getUserById(id);
     }
 
     @Override
-    public Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
     }
+
 
     @Override
     public void updateUser(User user) {
-        userRepository.save(user);
+        userDao.updateUser(user);
+    }
+
+
+    @Override
+    public void deleteUser(Long id) {
+        userDao.deleteUser(id);
     }
 
     @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public User getUserByName(String name) {
+        return userDao.getUserByName(name);
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public void createRole(Set<Role> roles) {
+        roleDao.createRole(roles);
+    }
+
+    @Override
+    public Set<Role> getAllRoles() {
+        return roleDao.getAllRoles();
     }
 }

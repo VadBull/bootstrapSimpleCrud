@@ -1,10 +1,9 @@
 package com.example.springbootcrud.controller;
 
 import com.example.springbootcrud.model.User;
-import com.example.springbootcrud.service.RoleService;
 import com.example.springbootcrud.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,55 +12,39 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class AdminComtroller {
-    private final UserService userService;
-    private final RoleService roleService;
-
-    public AdminComtroller (UserService userService,
-                            RoleService roleService) {
-        this.userService = userService;
-        this.roleService = roleService;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/admin")
-    public String getAdminPage(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
+    public String getAllUsers(ModelMap model) {
+        model.addAttribute("listUsers", userService.getAllUsers());
+        model.addAttribute("allRoles", userService.getAllRoles());
+        model.addAttribute("newUser", new User());
         return "admin";
     }
 
-    @GetMapping("/create")
-    public String getCreatePage(ModelMap model) {
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        model.addAttribute("newUser", new User());
-        return "create";
+    @PostMapping("/editUser/{id}")
+    public String editUser(ModelMap model, @PathVariable Long id) {
+        model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("allRoles", userService.getAllRoles());
+        return "editUser";
     }
 
-    @PostMapping("/create")
-    public String createUser(@ModelAttribute User user) {
-        User newUser = user;
-        userService.createUser(newUser);
-        return "redirect:/admin";
-    }
-
-    @PostMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        model.addAttribute("editUser", user);
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "update";
-    }
-
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute User user) {
+    @PostMapping("/editUser")
+    public String edit(@ModelAttribute("user") User user) {
         userService.updateUser(user);
         return "redirect:/admin";
     }
 
-    @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        userService.deleteUser(user);
+    @PostMapping("/createUser")
+    public String addUser(@ModelAttribute("user") User user) {
+        userService.createUser(user);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/deleteUser/{id}")
+    public String deleteUserById(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 }

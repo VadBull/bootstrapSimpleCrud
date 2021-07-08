@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Home</title>
+  <title>Users</title>
 </head>
 <body>
 <div style="text-align:right; padding:5px; margin:5px 0px; background:#ccc;">
@@ -11,44 +11,69 @@
   |
   <a th:href="@{/logout}"> Logout </a>
 </div>
-<div th:switch="${users}">
-  <h2 th:case="null">No users yet!</h2>
-  <div th:case="*">
-    <h2>Users</h2>
-    <table border="1">
-      <thead>
+<div>
+  <form th:action="@{/createUser}" method="post" th:object="${newUser}">
+    <fieldset>
+      <legend>Create new User</legend>
+      <p>
+        <label th:for="userName">UserName <em>*</em></label>
+        <input type="text" name="userName" th:id="userName">
+      </p>
+      <p>
+        <label th:for="password">Password <em>*</em></label>
+        <input type="text" name="password" th:id="password">
+      </p>
+      <p>
+        <label th:for="roles">Roles </label>
+        <select multiple name="roles" size="3" th:id="roles" required>
+          <option disabled>Select roles</option>
+          <option th:each="role : ${allRoles}" th:value="${role}" th:text="${role.roleName}"></option>
+        </select>
+      </p>
+    </fieldset>
+    <input type="submit" value="Create user">
+  </form>
+</div>
+<div>
+  <h2>Users table</h2>
+  <table border="1">
+    <tr>
+      <th>id</th>
+      <th>UserName</th>
+      <th>Password</th>
+      <th>Roles</th>
+    </tr>
+    <th:block th:each="user : ${listUsers}">
       <tr>
-        <th>UserName</th>
-        <th>Password</th>
-        <th>Roles</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="user : ${users}">
-        <td th:text="${user.name}"></td>
-        <td th:text="${user.password}"></td>
+        <td th:utext="${user.id}"></td>
+        <td th:utext="${user.username}"></td>
+        <td th:utext="${user.password}"></td>
         <td>
           <th:block th:each="role : ${user.roles}">
             <a th:text="${role.roleName} + ';'"></a>
           </th:block>
         </td>
         <td>
-          <form th:action="@{/edit/{id}(id=${user.id})}" method="post" th:object="${user}">
+          <!--// кнопка редактирования для @PathVariable("id")-->
+          <form th:action="@{/editUser/{id}(id=${user.id})}" method="post" th:object="${user}">
             <input type="submit" value="Edit">
           </form>
         </td>
         <td>
-          <form th:action="@{/delete/{id}(id=${user.id})}" method="post" th:object="${user}">
+          <!--// кнопка удаления для @PathVariable("id")-->
+          <form th:action="@{/deleteUser/{id}(id=${user.id})}" method="post" th:object="${user}">
             <input type="submit" value="Delete">
           </form>
+          <!--// ссылка удаления для @RequestParam("id") -->
+          <!--<a th:href="@{/deleteUser(id=${user.id})}">Delete</a>-->
+
+          <!--// ссылки удаления для @PathVariable("id") -->
+          <!--<a th:href="@{/deleteUser/{id}(id=${user.id})}">Delete</a>-->
+          <!--<a th:href="@{'deleteUser/' + ${user.id}}">Delete</a>-->
         </td>
       </tr>
-      </tbody>
-    </table>
-  </div>
-  <p><a href="/create">Add a new user</a></p>
+    </th:block>
+  </table>
 </div>
 </body>
 </html>
