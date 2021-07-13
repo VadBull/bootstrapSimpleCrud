@@ -1,21 +1,14 @@
 package com.example.springbootcrud.service;
 
-import com.example.springbootcrud.model.Role;
 import com.example.springbootcrud.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
     void createUser(User user);
-    List<User> getAllUsers();
+    Iterable<User> getAllUsers();
     void updateUser(User user);
-    void deleteUser(Long id);
-    User getUserByName(String name);
-    User getUserById(Long id);
-    void createRole(Set<Role> roles);
-    Set<Role> getAllRoles();
+    void deleteUser(User user);
+    Optional<User> getUserById(Long id);
 }
-

@@ -1,67 +1,48 @@
 package com.example.springbootcrud.service;
 
-import com.example.springbootcrud.dao.RoleDao;
-import com.example.springbootcrud.dao.UserDao;
-import com.example.springbootcrud.model.Role;
+import com.example.springbootcrud.dao.UserRepository;
 import com.example.springbootcrud.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Optional;
 
-@Transactional
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserDao userDao;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RoleDao roleDao;
+    public UserServiceImpl (UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    public UserServiceImpl() {}
-
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email);
+    }
 
     @Override
     public void createUser(User user) {
-        userDao.createUser(user);
-    }
-
-
-    @Override
-    public User getUserById(Long id) {
-        return (User) userDao.getUserById(id);
+        userRepository.save(user);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
     }
-
 
     @Override
     public void updateUser(User user) {
-        userDao.updateUser(user);
-    }
-
-
-    @Override
-    public void deleteUser(Long id) {
-        userDao.deleteUser(id);
+        userRepository.save(user);
     }
 
     @Override
-    public User getUserByName(String name) {
-        return userDao.getUserByName(name);
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     @Override
-    public void createRole(Set<Role> roles) {
-        roleDao.createRole(roles);
-    }
-
-    @Override
-    public Set<Role> getAllRoles() {
-        return roleDao.getAllRoles();
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 }
