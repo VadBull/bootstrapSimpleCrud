@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     void createUser(User user);
     Iterable<User> getAllUsers();
     void updateUser(User user);

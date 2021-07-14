@@ -1,6 +1,8 @@
 package com.example.springbootcrud.model;
 
 import lombok.NonNull;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,7 +21,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     public User() {}
