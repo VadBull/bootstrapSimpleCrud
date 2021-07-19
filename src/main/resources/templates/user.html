@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
 </head>
 <body>
-<div class="d-flex bg-dark" th:object="${user}">
-    <div class="p-2 text-white font-weight-bold" th:text="${user.email}"></div>
-    <div class="p-2 w-100 text-white" th:utext="'with roles: ' + ${user.roles}"></div>
+<div id="header" class="d-flex bg-dark">
+    <div id="header_email" class="p-2 text-white font-weight-bold"></div>
+    <div id="header_roles" class="p-2 w-100 text-white"></div>
     <a class="p-2 text-secondary text-right text-decoration-none" th:href="@{/logout}"> Logout </a>
 </div>
 <div class="row">
@@ -23,7 +23,7 @@
     <div class="col-10 p-0">
         <div class="tab-content bg-light p-2">
             <div class="tab-pane fade show active pl-3" style="height: 700px;" id="user_panel"
-                                                        role="tabpanel" aria-labelledby="user_panel">
+                 role="tabpanel" aria-labelledby="user_panel">
                 <h1>User information-page</h1>
                 <div class="pl-3 pt-1 d-flex border-top border-left border-right"><h4> About user</h4></div>
                 <div class="bg-white border p-3">
@@ -38,27 +38,20 @@
                             <th>Role</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:object="${user}">
-                            <td th:utext="${user.id}"></td>
-                            <td th:utext="${user.name}"></td>
-                            <td th:utext="${user.lastName}"></td>
-                            <td th:utext="${user.age}"></td>
-                            <td th:utext="${user.email}"></td>
-                            <td>
-                                <th:block th:each="role : ${user.roles}">
-                                    <a th:text="${role.roleName}"></a>
-                                </th:block>
-                            </td>
-                        </tr>
-                        </tbody>
+                        <tbody id="user_info"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+
+<script src="/getRolesFromUser.js"></script>
+<script src="/showHeader.js"></script>
+<script src="/showUserInfo.js"></script>
+
 </body>
 </html>

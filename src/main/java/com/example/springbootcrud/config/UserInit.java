@@ -4,6 +4,8 @@ import com.example.springbootcrud.dao.RoleRepository;
 import com.example.springbootcrud.dao.UserRepository;
 import com.example.springbootcrud.model.Role;
 import com.example.springbootcrud.model.User;
+import com.example.springbootcrud.service.RoleService;
+import com.example.springbootcrud.service.UserService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -14,23 +16,26 @@ import java.util.*;
 @Component
 public class UserInit implements ApplicationListener<ContextRefreshedEvent> {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private UserService userService;
+    private RoleService roleService;
 
-    public UserInit (UserRepository userRepository,
-                            RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public UserInit (UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Role[] rolesArray = new Role[]{new Role("ROLE_ADMIN"), new Role("ROLE_USER")};
-        Set<Role> rolesSet = new HashSet<>();
-        rolesSet.addAll(Arrays.asList(rolesArray));
-        roleRepository.saveAll(rolesSet);
-        User admin = new User("admin", "admin", 30, "admin@mail.ru", "admin", rolesSet);
-        userRepository.save(admin);
+        Set<Role> allRoles = new HashSet<>();
+        allRoles.add(new Role("ADMIN"));
+        allRoles.add(new Role("USER"));
+        roleService.createRoles(allRoles);
+        User admin = new User("admin", "admin", 32, "admin@mail.ru", "admin");
+        admin.setRoles("ADMIN, USER");
+        userService.createUser(admin);
+        User user = new User("user", "user", 18, "user@mail.ru", "user");
+        user.setRoles("USER");
+        userService.createUser(user);
     }
 }
