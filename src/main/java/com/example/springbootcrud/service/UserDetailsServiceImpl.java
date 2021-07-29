@@ -1,6 +1,7 @@
 package com.example.springbootcrud.service;
 
 import com.example.springbootcrud.dao.UserRepository;
+import com.example.springbootcrud.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+        return user;
     }
 }

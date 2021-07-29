@@ -32,10 +32,16 @@ public class UserInit implements ApplicationListener<ContextRefreshedEvent> {
         allRoles.add(new Role("USER"));
         roleService.createRoles(allRoles);
         User admin = new User("admin", "admin", 32, "admin@mail.ru", "admin");
-        admin.setRoles("ADMIN, USER");
+        admin.setRoles("ROLE_ADMIN, ROLE_USER");
         userService.createUser(admin);
         User user = new User("user", "user", 18, "user@mail.ru", "user");
-        user.setRoles("USER");
+        user.setRoles("ROLE_USER");
         userService.createUser(user);
+
+        User user2 = new User("user2", "user", 18, "user2@mail.ru", "4718395");
+        user2.setRoles("ROLE_USER");
+        userService.createUser(user2);
+
+
     }
 }
